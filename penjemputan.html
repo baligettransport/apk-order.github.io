@@ -1,0 +1,575 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Buat Order Baru - BGT-PRO</title>
+    
+    <!-- Fonts & Icons -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    
+    <style>
+        :root {
+            --primary: #2563eb; --primary-light: #3b82f6; --accent: #0ea5e9;
+            --success: #10b981; --danger: #ef4444; --warning: #f59e0b; 
+            --bg-main: #f8fafc; --bg-card: #ffffff; --text-dark: #0f172a; --text-gray: #94a3b8;
+            --border-light: #e2e8f0; --border-focus: #93c5fd;
+            --gradient-primary: linear-gradient(135deg, #2563eb 0%, #3b82f6 100%);
+            --shadow-soft: 0 4px 20px rgba(37, 99, 235, 0.08);
+            --shadow-card: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+        html, body { width: 100%; height: 100%; overflow-x: hidden; }
+        body { font-family: 'Poppins', sans-serif; background: var(--bg-main); color: var(--text-dark); min-height: 100dvh; }
+
+        .app-container { width: 100%; min-height: 100dvh; padding-bottom: 80px; }
+
+        /* --- Header --- */
+        .header { 
+            position: sticky; top: 0; z-index: 50; 
+            background: rgba(255, 255, 255, 0.95); 
+            backdrop-filter: blur(10px); 
+            padding: 12px 16px; 
+            border-bottom: 1px solid var(--border-light); 
+            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+        }
+        .header-left { display: flex; align-items: center; gap: 12px; }
+        .header-title { font-size: 1.1rem; font-weight: 700; color: var(--primary); letter-spacing: -0.5px; }
+        
+        .back-btn { 
+            width: 40px; height: 40px; background: var(--bg-main); 
+            border: 1px solid var(--border-light); border-radius: 12px; 
+            color: var(--primary); font-size: 1rem; cursor: pointer; 
+            display: flex; align-items: center; justify-content: center; 
+            transition: all 0.2s ease;
+        }
+        .back-btn:active { background: #e0f2fe; transform: scale(0.95); border-color: var(--primary); }
+
+        /* --- Hero --- */
+        .hero { 
+            margin: 16px; background: var(--gradient-primary); 
+            border-radius: 20px; padding: 24px 20px; 
+            text-align: center; position: relative; overflow: hidden; 
+            color: white; box-shadow: var(--shadow-soft); 
+            min-height: 100px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+        .hero::before, .hero::after {
+            content: ''; position: absolute; border-radius: 50%;
+            background: rgba(255,255,255,0.1);
+        }
+        .hero::before { width: 100px; height: 100px; top: -20px; left: -20px; }
+        .hero::after { width: 60px; height: 60px; bottom: -10px; right: 10%; }
+
+        .hero-icon { 
+            width: 50px; height: 50px; background: rgba(255,255,255,0.2); 
+            border-radius: 50%; display: flex; align-items: center; 
+            justify-content: center; margin: 0 auto 10px; font-size: 1.4rem; 
+            backdrop-filter: blur(4px);
+        }
+        .hero-desc { font-size: 0.9rem; opacity: 0.9; font-weight: 300; margin-top: 5px; }
+
+        /* --- Form Card --- */
+        .form-container { padding: 0 16px; margin-top: -10px; position: relative; z-index: 10; }
+        .form-card { 
+            background: var(--bg-card); border-radius: 20px; 
+            padding: 24px 20px; box-shadow: var(--shadow-card); 
+            border: 1px solid var(--border-light); 
+        }
+
+        .form-group { margin-bottom: 20px; }
+        .form-label { 
+            display: block; font-size: 0.85rem; font-weight: 600; 
+            color: var(--text-dark); margin-bottom: 8px; 
+        }
+        .form-label i { margin-right: 6px; color: var(--primary); width: 18px; text-align: center; }
+
+        .form-input { 
+            width: 100%; padding: 14px 16px; background: var(--bg-main); 
+            border: 1px solid var(--border-light); border-radius: 12px; 
+            font-family: 'Poppins', sans-serif; font-size: 0.95rem; 
+            color: var(--text-dark); transition: all 0.3s ease; 
+        }
+        .form-input:focus { 
+            outline: none; border-color: var(--primary); 
+            background: white; box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1); 
+        }
+        textarea.form-input { resize: vertical; min-height: 80px; line-height: 1.5; }
+
+        /* --- Elegant Selector Container --- */
+        .selector-container {
+            background: white;
+            border: 1px solid var(--border-light);
+            border-radius: 16px;
+            overflow: hidden;
+            margin-bottom: 20px;
+        }
+
+        /* Baris 1: Pesawat & Penumpang (2 Kolom) */
+        .row-2-col {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+        }
+
+        /* Baris 2: Koper (3 Kolom) */
+        .row-3-col {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            border-top: 1px solid var(--border-light);
+        }
+
+        /* Item Styling */
+        .selector-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 16px 8px;
+            cursor: pointer;
+            transition: background 0.2s;
+            position: relative;
+            background: white;
+        }
+
+        /* Garis pembatas vertikal */
+        .selector-item::after {
+            content: '';
+            position: absolute;
+            right: 0;
+            top: 15%;
+            height: 70%;
+            width: 1px;
+            background: var(--border-light);
+        }
+        
+        /* Hilangkan garis untuk item terakhir di setiap baris */
+        .selector-item:last-child::after, .selector-item:nth-child(2):last-child::after {
+            display: none;
+        }
+        /* Khusus baris 3 kolom, hilangkan garis di item tengah sebelah kanan? sudah otomatis terakhir */
+        /* Karena pakai grid, perlu selector khusus jika grid gap dipakai, tapi disini pakai border pseudo */
+        /* Di baris 3 kolom (item 3,4,5 total), item 3 (index 0) dan 4 (index 1) punya garis. Item 5 (index 2) tidak. */
+        /* CSS di atas sudah handle ini dengan logika 'last-child' per row container. */
+
+        .selector-item:active { background: var(--bg-main); }
+
+        /* Icon Styling */
+        .s-icon {
+            font-size: 1.3rem;
+            color: var(--primary);
+            margin-bottom: 6px;
+        }
+
+        /* Text Styling */
+        .s-label {
+            font-size: 0.7rem;
+            color: var(--text-gray);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 2px;
+            text-align: center;
+        }
+        .s-value {
+            font-size: 0.95rem;
+            font-weight: 600;
+            color: var(--text-dark);
+            text-align: center;
+        }
+        
+        /* Input khusus pesawat */
+        .s-input {
+            border: none;
+            background: transparent;
+            font-family: 'Poppins', sans-serif;
+            font-size: 0.95rem;
+            font-weight: 600;
+            color: var(--text-dark);
+            text-align: center;
+            width: 100%;
+            padding: 0;
+            outline: none;
+        }
+        .s-input::placeholder { color: #cbd5e1; font-weight: 400; }
+
+        /* --- Divider --- */
+        .divider { display: flex; align-items: center; justify-content: center; margin: 24px 0; color: var(--text-gray); }
+        .divider-line { height: 1px; background: var(--border-light); flex: 1; }
+        .divider i { margin: 0 12px; font-size: 0.8rem; color: #94a3b8; }
+
+        /* --- Buttons --- */
+        .submit-btn { 
+            width: 100%; padding: 16px; background: var(--gradient-primary); 
+            border: none; border-radius: 14px; color: white; 
+            font-family: 'Poppins', sans-serif; font-size: 1rem; 
+            font-weight: 600; cursor: pointer; display: flex; 
+            align-items: center; justify-content: center; gap: 10px; 
+            transition: transform 0.1s; box-shadow: 0 4px 15px rgba(37, 99, 235, 0.3); 
+            margin-top: 10px;
+        }
+        .submit-btn:active { transform: scale(0.98); }
+
+        /* --- Modal --- */
+        .modal-overlay {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0, 0, 0, 0.5); z-index: 2000;
+            display: none; align-items: center; justify-content: center;
+            padding: 20px; opacity: 0; transition: opacity 0.2s;
+        }
+        .modal-overlay.show { display: flex; opacity: 1; }
+        
+        .modal-content {
+            background: white; width: 100%; max-width: 320px;
+            border-radius: 20px; padding: 24px; text-align: center;
+            transform: scale(0.9); transition: transform 0.2s;
+        }
+        .modal-overlay.show .modal-content { transform: scale(1); }
+        .modal-title { font-weight: 600; margin-bottom: 16px; color: var(--text-dark); font-size: 1.1rem; }
+        
+        .number-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-bottom: 20px; }
+        .num-btn {
+            aspect-ratio: 1; border: 1px solid var(--border-light); border-radius: 10px;
+            background: var(--bg-main); font-size: 1.2rem; font-weight: 600; color: var(--text-dark);
+            cursor: pointer; transition: all 0.1s;
+        }
+        .num-btn:active { background: var(--primary); color: white; border-color: var(--primary); }
+        .close-modal-btn {
+            width: 100%; padding: 12px; background: #f1f5f9; border: none; border-radius: 10px;
+            font-weight: 600; color: var(--text-gray); cursor: pointer;
+        }
+
+        /* --- Toast & Loading & Popup --- */
+        #toast-container { position: fixed; top: 20px; left: 50%; transform: translateX(-50%); z-index: 3000; display: flex; flex-direction: column; gap: 10px; width: 90%; max-width: 350px; pointer-events: none; }
+        .toast { background: white; padding: 12px 16px; border-radius: 12px; box-shadow: 0 10px 25px rgba(0,0,0,0.15); border-left: 4px solid var(--primary); display: flex; align-items: center; gap: 12px; animation: slideInDown 0.3s cubic-bezier(0.68, -0.55, 0.27, 1.55); pointer-events: auto; }
+        .toast.success { border-left-color: var(--success); } .toast.error { border-left-color: var(--danger); }
+        .toast-icon { font-size: 1.2rem; } .toast.success .toast-icon { color: var(--success); } .toast.error .toast-icon { color: var(--danger); }
+        .toast-msg { font-size: 0.9rem; font-weight: 500; color: var(--text-dark); }
+        @keyframes slideInDown { from { opacity: 0; transform: translateY(-20px); } to { opacity: 1; transform: translateY(0); } }
+        @keyframes fadeOut { to { opacity: 0; transform: translateY(-10px); } }
+
+        .loading-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(255, 255, 255, 0.85); backdrop-filter: blur(4px); z-index: 2500; display: none; align-items: center; justify-content: center; flex-direction: column; }
+        .spinner { width: 50px; height: 50px; border: 5px solid #e2e8f0; border-top-color: var(--primary); border-radius: 50%; animation: spin 1s linear infinite; }
+        .loading-text { margin-top: 15px; font-weight: 600; color: var(--primary); font-size: 0.95rem; }
+        @keyframes spin { to { transform: rotate(360deg); } }
+
+        .popup-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(15, 23, 42, 0.6); z-index: 1000; display: none; align-items: center; justify-content: center; padding: 20px; opacity: 0; transition: opacity 0.3s; }
+        .popup-overlay.active { display: flex; opacity: 1; }
+        .popup-content { background: white; padding: 30px; border-radius: 24px; text-align: center; width: 100%; max-width: 320px; transform: scale(0.9); transition: transform 0.3s; box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1); }
+        .popup-overlay.active .popup-content { transform: scale(1); }
+        .popup-icon { width: 70px; height: 70px; background: #ecfdf5; color: var(--success); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 2rem; margin: 0 auto 20px; }
+        .popup-title { font-size: 1.25rem; font-weight: 700; margin-bottom: 8px; color: var(--text-dark); }
+        .popup-desc { color: var(--text-gray); font-size: 0.9rem; margin-bottom: 24px; line-height: 1.5; }
+        .popup-close { width: 100%; padding: 14px; background: var(--success); border: none; border-radius: 12px; color: white; font-weight: 600; font-size: 1rem; cursor: pointer; transition: background 0.2s; }
+    </style>
+</head>
+<body>
+
+    <div class="loading-overlay" id="loadingOverlay">
+        <div class="spinner"></div>
+        <div class="loading-text">Sedang memproses...</div>
+    </div>
+
+    <div id="toast-container"></div>
+
+    <div class="modal-overlay" id="selectionModal">
+        <div class="modal-content">
+            <h3 class="modal-title" id="modalTitle">Pilih Jumlah</h3>
+            <div class="number-grid" id="modalNumberGrid"></div>
+            <button class="close-modal-btn" onclick="closeModal()">Batal</button>
+        </div>
+    </div>
+
+    <div class="app-container">
+        <header class="header">
+            <div class="header-left">
+                <button class="back-btn" onclick="window.location.href='beranda.html'">
+                    <i class="fas fa-arrow-left"></i>
+                </button>
+                <div class="header-title">Buat Order Baru</div>
+            </div>
+        </header>
+
+        <div class="hero">
+            <div class="hero-icon"><i class="fas fa-shipping-fast"></i></div>
+            <p class="hero-desc">Silakan isi form detail pengantaran</p>
+        </div>
+
+        <div class="form-container">
+            <div class="form-card">
+                <form id="orderForm" onsubmit="return submitOrder(event)">
+                    
+                    <!-- Data Tamu -->
+                    <div class="form-group">
+                        <label class="form-label"><i class="fas fa-user"></i> Nama Tamu</label>
+                        <input type="text" class="form-input" id="namaTamu" placeholder="Nama lengkap tamu" required autocomplete="name">
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label"><i class="fas fa-phone"></i> Nomor Telepon</label>
+                        <input type="tel" class="form-input" id="telepon" placeholder="Contoh: +62 8123456789" required autocomplete="tel">
+                    </div>
+
+                    <div class="form-group" style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
+                        <div>
+                            <label class="form-label"><i class="fas fa-calendar-alt"></i> Tanggal</label>
+                            <input type="date" class="form-input" id="tanggalJemput" required>
+                        </div>
+                        <div>
+                            <label class="form-label"><i class="fas fa-clock"></i> Jam</label>
+                            <input type="time" class="form-input" id="jamJemput" required>
+                        </div>
+                    </div>
+
+                    <!-- Layout Baru: Pesawat/Penumpang & Koper -->
+                    <div class="selector-container">
+                        <!-- Baris 1: 2 Kolom -->
+                        <div class="row-2-col">
+                            <div class="selector-item">
+                                <i class="fas fa-plane s-icon"></i>
+                                <span class="s-label">Kode Pesawat</span>
+                                <input type="text" class="s-input" id="kodePesawat" placeholder="GA-401">
+                            </div>
+                            <div class="selector-item" onclick="openPassengerModal()">
+                                <i class="fas fa-users s-icon"></i>
+                                <span class="s-label">Penumpang</span>
+                                <span class="s-value" id="passengerCountDisplay">1 Orang</span>
+                            </div>
+                        </div>
+                        
+                        <!-- Baris 2: 3 Kolom (Koper) -->
+                        <div class="row-3-col">
+                            <div class="selector-item" onclick="openLuggageModal('kecil', 'Kecil')">
+                                <i class="fas fa-suitcase s-icon"></i>
+                                <span class="s-label">Kecil</span>
+                                <span class="s-value" id="display-kecil">0</span>
+                            </div>
+                            <div class="selector-item" onclick="openLuggageModal('sedang', 'Sedang')">
+                                <i class="fas fa-suitcase-rolling s-icon"></i>
+                                <span class="s-label">Sedang</span>
+                                <span class="s-value" id="display-sedang">0</span>
+                            </div>
+                            <div class="selector-item" onclick="openLuggageModal('besar', 'Besar')">
+                                <i class="fas fa-luggage-cart s-icon"></i>
+                                <span class="s-label">Besar</span>
+                                <span class="s-value" id="display-besar">0</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="divider">
+                        <div class="divider-line"></div>
+                        <i class="fas fa-map-signs"></i>
+                        <div class="divider-line"></div>
+                    </div>
+
+                    <!-- Rute -->
+                    <div class="form-group">
+                        <label class="form-label" style="color: var(--success);"><i class="fas fa-map-marker-alt"></i> Titik Jemput (A)</label>
+                        <textarea class="form-input" id="titikA" placeholder="Contoh: Hotel Ayana, Lobby Utama" required></textarea>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label" style="color: var(--danger);"><i class="fas fa-flag-checkered"></i> Titik Tujuan (B)</label>
+                        <textarea class="form-input" id="titikB" placeholder="Contoh: Bandara Ngurah Rai, Terminal Domestik" required></textarea>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label"><i class="fas fa-money-bill-wave"></i> Harga (Rp)</label>
+                        <input type="number" class="form-input" id="harga" placeholder="Contoh: 150000" required>
+                    </div>
+
+                    <!-- Deskripsi -->
+                    <div class="form-group">
+                        <label class="form-label"><i class="fas fa-sticky-note"></i> Catatan Tambahan</label>
+                        <textarea class="form-input" id="deskripsi" placeholder="Contoh: Barang fragil, tolong hati-hati..." style="min-height: 80px;"></textarea>
+                    </div>
+
+                    <button type="submit" class="submit-btn" id="submitBtn">
+                        <i class="fas fa-paper-plane"></i> <span>Kirim Order</span>
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Success Popup -->
+    <div class="popup-overlay" id="successPopup">
+        <div class="popup-content">
+            <div class="popup-icon"><i class="fas fa-check"></i></div>
+            <h3 class="popup-title">Order Berhasil!</h3>
+            <p class="popup-desc">Data orderan telah dikirim ke sistem driver. Silakan tunggu konfirmasi selanjutnya.</p>
+            <button class="popup-close" onclick="resetAndClose()">Tutup</button>
+        </div>
+    </div>
+
+    <!-- Firebase SDK -->
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-database-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-auth-compat.js"></script>
+
+    <script>
+        // --- Konfigurasi Firebase ---
+        const firebaseConfig = {
+            apiKey: "AIzaSyCahZIFKFXMCokFNxCpFokNSVtKzN4llus",
+            authDomain: "cedar-setup-425414-d7.firebaseapp.com",
+            databaseURL: "https://cedar-setup-425414-d7-default-rtdb.firebaseio.com",
+            projectId: "cedar-setup-425414-d7",
+            storageBucket: "cedar-setup-425414-d7.firebasestorage.app",
+            messagingSenderId: "723545991983",
+            appId: "1:723545991983:web:379548d2b425a502a60fda"
+        };
+
+        firebase.initializeApp(firebaseConfig);
+        const db = firebase.database();
+
+        // State Variables
+        let luggageCounts = { kecil: 0, sedang: 0, besar: 0 };
+        let passengerCount = 1; 
+        let currentModalTarget = null; 
+
+        // --- Generic Modal Logic ---
+        function openModal(title, maxCount, target) {
+            currentModalTarget = target;
+            document.getElementById('modalTitle').innerText = title;
+            
+            const grid = document.getElementById('modalNumberGrid');
+            grid.innerHTML = ''; 
+            
+            for (let i = 1; i <= maxCount; i++) {
+                const btn = document.createElement('button');
+                btn.className = 'num-btn';
+                btn.innerText = i;
+                btn.onclick = () => handleSelection(i);
+                grid.appendChild(btn);
+            }
+            
+            document.getElementById('selectionModal').classList.add('show');
+        }
+
+        function closeModal() {
+            document.getElementById('selectionModal').classList.remove('show');
+            currentModalTarget = null;
+        }
+
+        function handleSelection(num) {
+            if (currentModalTarget === 'passenger') {
+                setPassengerCount(num);
+            } else if (currentModalTarget && currentModalTarget.startsWith('luggage-')) {
+                const type = currentModalTarget.replace('luggage-', '');
+                setLuggageCount(type, num);
+            }
+            closeModal();
+        }
+
+        // --- Specific Openers ---
+        function openPassengerModal() {
+            openModal('Jumlah Penumpang', 6, 'passenger');
+        }
+
+        function openLuggageModal(type, label) {
+            openModal(`Koper ${label}`, 5, `luggage-${type}`);
+        }
+
+        // --- Setters ---
+        function setPassengerCount(num) {
+            passengerCount = num;
+            document.getElementById('passengerCountDisplay').innerText = num + ' Orang';
+        }
+
+        function setLuggageCount(type, num) {
+            luggageCounts[type] = num;
+            document.getElementById('display-' + type).innerText = num;
+        }
+
+        // --- UI Interaction Functions ---
+        function showToast(message, type = 'success') {
+            const container = document.getElementById('toast-container');
+            const toast = document.createElement('div');
+            toast.className = `toast ${type}`;
+            const iconClass = type === 'success' ? 'fa-check-circle' : 'fa-exclamation-circle';
+            toast.innerHTML = `<div class="toast-icon"><i class="fas ${iconClass}"></i></div><div class="toast-msg">${message}</div>`;
+            container.appendChild(toast);
+            setTimeout(() => {
+                toast.style.animation = 'fadeOut 0.3s forwards';
+                setTimeout(() => toast.remove(), 300);
+            }, 3000);
+        }
+
+        function toggleLoading(show) {
+            const overlay = document.getElementById('loadingOverlay');
+            overlay.style.display = show ? 'flex' : 'none';
+        }
+
+        // --- Core Logic: Submit Order ---
+        async function submitOrder(e) {
+            e.preventDefault();
+            toggleLoading(true);
+
+            const orderId = 'BGT-' + Date.now().toString().slice(-6);
+            
+            let koperParts = [];
+            if (luggageCounts.kecil > 0) koperParts.push(`Kecil: ${luggageCounts.kecil}`);
+            if (luggageCounts.sedang > 0) koperParts.push(`Sedang: ${luggageCounts.sedang}`);
+            if (luggageCounts.besar > 0) koperParts.push(`Besar: ${luggageCounts.besar}`);
+            const koperText = koperParts.length > 0 ? koperParts.join(', ') : '-';
+
+            const flightCode = document.getElementById('kodePesawat').value.trim() || '-';
+
+            const dataValues = {
+                id: orderId,
+                nama: document.getElementById('namaTamu').value,
+                namaTamu: document.getElementById('namaTamu').value,
+                telepon: document.getElementById('telepon').value,
+                tanggalJemput: document.getElementById('tanggalJemput').value,
+                pickupTime: document.getElementById('jamJemput').value,
+                pickup: document.getElementById('titikA').value,
+                dropoff: document.getElementById('titikB').value,
+                price: "Rp " + parseInt(document.getElementById('harga').value).toLocaleString('id-ID'),
+                status: "order",
+                timestamp: firebase.database.ServerValue.TIMESTAMP,
+                items: "-",
+                distance: "-",
+                koper: koperText,
+                penumpang: passengerCount,
+                flightCode: flightCode,
+                deskripsi: document.getElementById('deskripsi').value || '',
+            };
+
+            try {
+                await db.ref('orders/' + orderId).set(dataValues);
+                toggleLoading(false);
+                document.getElementById('successPopup').classList.add('active');
+            } catch (error) {
+                console.error("System Error:", error);
+                toggleLoading(false);
+                showToast("Terjadi kesalahan: " + error.message, "error");
+            }
+        }
+
+        function resetAndClose() {
+            document.getElementById('successPopup').classList.remove('active');
+            document.getElementById('orderForm').reset();
+            
+            passengerCount = 1;
+            document.getElementById('passengerCountDisplay').innerText = '1 Orang';
+            
+            luggageCounts = { kecil: 0, sedang: 0, besar: 0 };
+            ['kecil', 'sedang', 'besar'].forEach(type => {
+                document.getElementById('display-' + type).innerText = '0';
+            });
+
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        // Set default date
+        document.addEventListener('DOMContentLoaded', () => {
+            const dateInput = document.getElementById('tanggalJemput');
+            const today = new Date().toISOString().split('T')[0];
+            dateInput.value = today;
+        });
+    </script>
+</body>
+</html>

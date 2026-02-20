@@ -1,0 +1,650 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>SuperApp - Masuk</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: linear-gradient(180deg, #87CEEB 0%, #B0E0E6 30%, #E0F4FF 60%, #FFFFFF 100%);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            position: relative;
+            overflow-x: hidden;
+        }
+
+        /* Cloud decorations */
+        .cloud {
+            position: fixed;
+            background: rgba(255, 255, 255, 0.8);
+            border-radius: 100px;
+            filter: blur(2px);
+            z-index: 0;
+        }
+
+        .cloud-1 {
+            top: 10%;
+            left: -5%;
+            width: 200px;
+            height: 60px;
+            animation: floatCloud 20s ease-in-out infinite;
+        }
+
+        .cloud-2 {
+            top: 20%;
+            right: -5%;
+            width: 180px;
+            height: 50px;
+            animation: floatCloud 25s ease-in-out infinite reverse;
+        }
+
+        .cloud-3 {
+            top: 35%;
+            left: 10%;
+            width: 150px;
+            height: 40px;
+            animation: floatCloud 18s ease-in-out infinite;
+        }
+
+        @keyframes floatCloud {
+            0%, 100% { transform: translateX(0) translateY(0); }
+            50% { transform: translateX(30px) translateY(15px); }
+        }
+
+        .login-container {
+            width: 100%;
+            max-width: 400px;
+            padding: 40px 20px;
+            position: relative;
+            z-index: 10;
+        }
+
+        .logo-section {
+            text-align: center;
+            margin-bottom: 50px;
+        }
+
+        .logo-icon {
+            width: 90px;
+            height: 90px;
+            background: linear-gradient(145deg, #1a1a1a 0%, #2d2d2d 100%);
+            border-radius: 24px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 24px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+        }
+
+        .logo-icon svg {
+            width: 52px;
+            height: 52px;
+            fill: #00B14F;
+        }
+
+        .logo-text {
+            font-size: 32px;
+            font-weight: 700;
+            color: #1a1a1a;
+            letter-spacing: -1px;
+        }
+
+        .logo-tagline {
+            font-size: 15px;
+            color: #555;
+            margin-top: 10px;
+            font-weight: 400;
+        }
+
+        .tab-container {
+            display: flex;
+            justify-content: center;
+            gap: 8px;
+            margin-bottom: 40px;
+        }
+
+        .tab-btn {
+            padding: 12px 32px;
+            border: none;
+            background: rgba(255, 255, 255, 0.6);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            font-size: 15px;
+            font-weight: 600;
+            color: #666;
+            cursor: pointer;
+            border-radius: 30px;
+            transition: all 0.3s ease;
+        }
+
+        .tab-btn.active {
+            background: #1a1a1a;
+            color: white;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
+        }
+
+        .tab-btn:hover:not(.active) {
+            background: rgba(255, 255, 255, 0.9);
+        }
+
+        .form-section {
+            display: none;
+        }
+
+        .form-section.active {
+            display: block;
+        }
+
+        .input-group {
+            margin-bottom: 20px;
+        }
+
+        .input-group label {
+            display: block;
+            font-size: 14px;
+            font-weight: 500;
+            color: #333;
+            margin-bottom: 8px;
+        }
+
+        .input-group input {
+            width: 100%;
+            padding: 16px 18px;
+            border: none;
+            border-radius: 16px;
+            font-size: 15px;
+            font-family: inherit;
+            transition: all 0.3s ease;
+            outline: none;
+            background: rgba(255, 255, 255, 0.85);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+        }
+
+        .input-group input:focus {
+            background: rgba(255, 255, 255, 1);
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.1);
+            transform: translateY(-2px);
+        }
+
+        .input-group input::placeholder {
+            color: #aaa;
+        }
+
+        .phone-input {
+            display: flex;
+            gap: 10px;
+        }
+
+        .country-code {
+            width: 80px;
+            text-align: center;
+            background: rgba(255, 255, 255, 0.7);
+            font-weight: 600;
+        }
+
+        .forgot-password {
+            text-align: right;
+            margin-bottom: 24px;
+        }
+
+        .forgot-password a {
+            color: #333;
+            text-decoration: none;
+            font-size: 14px;
+            font-weight: 500;
+            transition: color 0.3s ease;
+        }
+
+        .forgot-password a:hover {
+            color: #1a1a1a;
+        }
+
+        .btn-primary {
+            width: 100%;
+            padding: 18px;
+            background: #1a1a1a;
+            color: white;
+            border: none;
+            border-radius: 16px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 12px 35px rgba(0, 0, 0, 0.2);
+        }
+
+        .btn-primary:active {
+            transform: translateY(-1px);
+        }
+
+        .divider {
+            display: flex;
+            align-items: center;
+            margin: 35px 0;
+        }
+
+        .divider-line {
+            flex: 1;
+            height: 1px;
+            background: rgba(0, 0, 0, 0.1);
+        }
+
+        .divider-text {
+            padding: 0 20px;
+            color: #888;
+            font-size: 13px;
+            font-weight: 500;
+        }
+
+        .social-login {
+            display: flex;
+            flex-direction: column;
+            gap: 14px;
+        }
+
+        .social-btn {
+            width: 100%;
+            padding: 16px;
+            border: none;
+            border-radius: 16px;
+            background: rgba(255, 255, 255, 0.9);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+            font-size: 15px;
+            font-weight: 600;
+            color: #333;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+        }
+
+        .social-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.15);
+        }
+
+        .social-btn:active {
+            transform: translateY(-1px);
+        }
+
+        .social-btn.google:hover {
+            background: rgba(255, 255, 255, 1);
+        }
+
+        .social-btn.facebook:hover {
+            background: #1877F2;
+            color: white;
+        }
+
+        .social-btn.facebook:hover svg {
+            fill: white;
+        }
+
+        .social-btn svg {
+            width: 22px;
+            height: 22px;
+        }
+
+        .social-btn .spinner {
+            display: none;
+            width: 20px;
+            height: 20px;
+            border: 2px solid rgba(0, 0, 0, 0.2);
+            border-top-color: #333;
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+        }
+
+        .social-btn.facebook .spinner {
+            border-color: rgba(255, 255, 255, 0.3);
+            border-top-color: white;
+        }
+
+        .social-btn.loading .spinner {
+            display: block;
+        }
+
+        .social-btn.loading .btn-text,
+        .social-btn.loading svg:not(.spinner) {
+            display: none;
+        }
+
+        .terms {
+            text-align: center;
+            margin-top: 40px;
+            font-size: 13px;
+            color: #666;
+            line-height: 1.8;
+        }
+
+        .terms a {
+            color: #333;
+            text-decoration: none;
+            font-weight: 600;
+        }
+
+        .terms a:hover {
+            text-decoration: underline;
+        }
+
+        /* Toast Notification */
+        .toast {
+            position: fixed;
+            top: 30px;
+            left: 50%;
+            transform: translateX(-50%) translateY(-100px);
+            background: #1a1a1a;
+            color: white;
+            padding: 16px 28px;
+            border-radius: 16px;
+            font-size: 14px;
+            font-weight: 500;
+            z-index: 1000;
+            opacity: 0;
+            transition: all 0.4s ease;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+        }
+
+        .toast.show {
+            transform: translateX(-50%) translateY(0);
+            opacity: 1;
+        }
+
+        .toast.success {
+            background: linear-gradient(135deg, #00B14F 0%, #009541 100%);
+        }
+
+        .toast.error {
+            background: linear-gradient(135deg, #e74c3c 0%, #c0392b 100%);
+        }
+
+        .toast.info {
+            background: linear-gradient(135deg, #3498db 0%, #2980b9 100%);
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        /* Responsive */
+        @media (max-width: 480px) {
+            .login-container {
+                padding: 30px 16px;
+            }
+
+            .logo-icon {
+                width: 80px;
+                height: 80px;
+            }
+
+            .logo-text {
+                font-size: 28px;
+            }
+
+            .social-login {
+                gap: 12px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Clouds -->
+    <div class="cloud cloud-1"></div>
+    <div class="cloud cloud-2"></div>
+    <div class="cloud cloud-3"></div>
+
+    <!-- Toast Notification -->
+    <div class="toast" id="toast"></div>
+
+    <div class="login-container">
+        <div class="logo-section">
+            <div class="logo-icon">
+                <svg viewBox="0 0 24 24">
+                    <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/>
+                </svg>
+            </div>
+            <div class="logo-text">SuperApp</div>
+            <div class="logo-tagline">Semua Layanan dalam Satu Aplikasi</div>
+        </div>
+
+        <div class="tab-container">
+            <button class="tab-btn active" onclick="switchTab('login')">Masuk</button>
+            <button class="tab-btn" onclick="switchTab('register')">Daftar</button>
+        </div>
+
+        <!-- Login Form -->
+        <div class="form-section active" id="loginForm">
+            <div class="input-group">
+                <label>Nomor HP</label>
+                <div class="phone-input">
+                    <input type="text" class="country-code" value="+62" readonly>
+                    <input type="tel" id="loginPhone" placeholder="8123456789">
+                </div>
+            </div>
+            <div class="input-group">
+                <label>Kata Sandi</label>
+                <input type="password" id="loginPassword" placeholder="Masukkan kata sandi">
+            </div>
+            <div class="forgot-password">
+                <a href="#">Lupa kata sandi?</a>
+            </div>
+            <button class="btn-primary" onclick="handleLogin()">Masuk</button>
+
+            <div class="divider">
+                <div class="divider-line"></div>
+                <span class="divider-text">atau masuk dengan</span>
+                <div class="divider-line"></div>
+            </div>
+
+            <div class="social-login">
+                <button class="social-btn google" id="googleBtn" onclick="handleGoogleLogin()">
+                    <svg viewBox="0 0 24 24">
+                        <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
+                        <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/>
+                        <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/>
+                        <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/>
+                    </svg>
+                    <span class="btn-text">Masuk dengan Google</span>
+                    <div class="spinner"></div>
+                </button>
+                <button class="social-btn facebook" id="facebookBtn" onclick="handleFacebookLogin()">
+                    <svg viewBox="0 0 24 24" fill="#1877F2">
+                        <path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/>
+                    </svg>
+                    <span class="btn-text">Masuk dengan Facebook</span>
+                    <div class="spinner"></div>
+                </button>
+            </div>
+        </div>
+
+        <!-- Register Form -->
+        <div class="form-section" id="registerForm">
+            <div class="input-group">
+                <label>Nama Lengkap</label>
+                <input type="text" id="registerName" placeholder="Masukkan nama lengkap">
+            </div>
+            <div class="input-group">
+                <label>Email</label>
+                <input type="email" id="registerEmail" placeholder="contoh@email.com">
+            </div>
+            <div class="input-group">
+                <label>Nomor HP</label>
+                <div class="phone-input">
+                    <input type="text" class="country-code" value="+62" readonly>
+                    <input type="tel" id="registerPhone" placeholder="8123456789">
+                </div>
+            </div>
+            <div class="input-group">
+                <label>Kata Sandi</label>
+                <input type="password" id="registerPassword" placeholder="Minimal 8 karakter">
+            </div>
+            <div class="input-group">
+                <label>Konfirmasi Kata Sandi</label>
+                <input type="password" id="registerConfirmPassword" placeholder="Ulangi kata sandi">
+            </div>
+            <button class="btn-primary" onclick="handleRegister()">Daftar</button>
+        </div>
+
+        <div class="terms">
+            Dengan melanjutkan, Anda menyetujui<br>
+            <a href="#">Syarat & Ketentuan</a> dan <a href="#">Kebijakan Privasi</a>
+        </div>
+    </div>
+
+    <script>
+        // Switch Tab
+        function switchTab(tab) {
+            var tabs = document.querySelectorAll('.tab-btn');
+            var forms = document.querySelectorAll('.form-section');
+            
+            tabs.forEach(function(t) {
+                t.classList.remove('active');
+            });
+            forms.forEach(function(f) {
+                f.classList.remove('active');
+            });
+            
+            if (tab === 'login') {
+                tabs[0].classList.add('active');
+                document.getElementById('loginForm').classList.add('active');
+            } else {
+                tabs[1].classList.add('active');
+                document.getElementById('registerForm').classList.add('active');
+            }
+        }
+
+        // Show Toast
+        function showToast(message, type) {
+            type = type || 'success';
+            var toast = document.getElementById('toast');
+            toast.textContent = message;
+            toast.className = 'toast ' + type;
+            toast.classList.add('show');
+            
+            setTimeout(function() {
+                toast.classList.remove('show');
+            }, 3000);
+        }
+
+        // Handle Login
+        function handleLogin() {
+            var phone = document.getElementById('loginPhone').value;
+            var password = document.getElementById('loginPassword').value;
+
+            if (!phone || !password) {
+                showToast('Mohon lengkapi semua data', 'error');
+                return;
+            }
+
+            showToast('Berhasil masuk! Mengalihkan...', 'success');
+            
+            setTimeout(function() {
+                window.location.href = 'beranda.html';
+            }, 1500);
+        }
+
+        // Handle Register
+        function handleRegister() {
+            var name = document.getElementById('registerName').value;
+            var email = document.getElementById('registerEmail').value;
+            var phone = document.getElementById('registerPhone').value;
+            var password = document.getElementById('registerPassword').value;
+            var confirmPassword = document.getElementById('registerConfirmPassword').value;
+
+            if (!name || !email || !phone || !password || !confirmPassword) {
+                showToast('Mohon lengkapi semua data', 'error');
+                return;
+            }
+
+            if (password !== confirmPassword) {
+                showToast('Kata sandi tidak cocok', 'error');
+                return;
+            }
+
+            if (password.length < 8) {
+                showToast('Kata sandi minimal 8 karakter', 'error');
+                return;
+            }
+
+            showToast('Pendaftaran berhasil! Silakan masuk', 'success');
+            
+            setTimeout(function() {
+                switchTab('login');
+            }, 1500);
+        }
+
+        // Handle Google Login
+        function handleGoogleLogin() {
+            var btn = document.getElementById('googleBtn');
+            
+            if (btn.classList.contains('loading')) return;
+            
+            btn.classList.add('loading');
+            showToast('Menghubungkan ke Google...', 'info');
+            
+            setTimeout(function() {
+                btn.classList.remove('loading');
+                showToast('Login Google berhasil!', 'success');
+                
+                localStorage.setItem('userData', JSON.stringify({
+                    email: 'user@gmail.com',
+                    name: 'User Google',
+                    provider: 'google'
+                }));
+                
+                setTimeout(function() {
+                    window.location.href = 'beranda.html';
+                }, 1000);
+            }, 2000);
+        }
+
+        // Handle Facebook Login
+        function handleFacebookLogin() {
+            var btn = document.getElementById('facebookBtn');
+            
+            if (btn.classList.contains('loading')) return;
+            
+            btn.classList.add('loading');
+            showToast('Menghubungkan ke Facebook...', 'info');
+            
+            setTimeout(function() {
+                btn.classList.remove('loading');
+                showToast('Login Facebook berhasil!', 'success');
+                
+                localStorage.setItem('userData', JSON.stringify({
+                    email: 'user@facebook.com',
+                    name: 'User Facebook',
+                    provider: 'facebook'
+                }));
+                
+                setTimeout(function() {
+                    window.location.href = 'beranda.html';
+                }, 1000);
+            }, 2000);
+        }
+    </script>
+</body>
+</html>

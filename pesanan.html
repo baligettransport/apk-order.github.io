@@ -1,0 +1,622 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>SuperApp - Pesanan</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: #f5f5f5;
+            min-height: 100vh;
+            padding-bottom: 80px;
+        }
+
+        /* Header */
+        .header {
+            background: white;
+            padding: 20px;
+            padding-top: 40px;
+            position: sticky;
+            top: 0;
+            z-index: 50;
+            box-shadow: 0 2px 12px rgba(0, 0, 0, 0.05);
+        }
+
+        .header-title {
+            font-size: 22px;
+            font-weight: 700;
+            color: #1a1a1a;
+            margin-bottom: 16px;
+        }
+
+        /* Tab Filter */
+        .tab-filter {
+            display: flex;
+            gap: 8px;
+            overflow-x: auto;
+            scrollbar-width: none;
+            -ms-overflow-style: none;
+        }
+
+        .tab-filter::-webkit-scrollbar {
+            display: none;
+        }
+
+        .filter-btn {
+            padding: 10px 20px;
+            border: 2px solid #e0e0e0;
+            background: white;
+            border-radius: 25px;
+            font-size: 14px;
+            font-weight: 500;
+            color: #666;
+            cursor: pointer;
+            white-space: nowrap;
+            transition: all 0.3s ease;
+        }
+
+        .filter-btn.active {
+            background: #00B14F;
+            border-color: #00B14F;
+            color: white;
+        }
+
+        /* Orders List */
+        .orders-container {
+            padding: 16px;
+        }
+
+        .order-card {
+            background: white;
+            border-radius: 16px;
+            padding: 16px;
+            margin-bottom: 12px;
+            box-shadow: 0 2px 12px rgba(0, 0, 0, 0.05);
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .order-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
+        }
+
+        .order-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 12px;
+        }
+
+        .order-service {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .service-icon-box {
+            width: 44px;
+            height: 44px;
+            background: #f5f5f5;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .service-icon-box svg {
+            width: 24px;
+            height: 24px;
+            stroke: #1a1a1a;
+            fill: none;
+            stroke-width: 1.5;
+        }
+
+        .service-info h4 {
+            font-size: 15px;
+            color: #1a1a1a;
+            margin-bottom: 2px;
+        }
+
+        .service-info span {
+            font-size: 13px;
+            color: #999;
+        }
+
+        .order-status {
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        .status-completed {
+            background: #e8f5e9;
+            color: #00B14F;
+        }
+
+        .status-progress {
+            background: #fff3e0;
+            color: #f57c00;
+        }
+
+        .status-pending {
+            background: #fce4ec;
+            color: #e91e63;
+        }
+
+        .status-cancelled {
+            background: #f5f5f5;
+            color: #999;
+        }
+
+        .order-route {
+            margin-bottom: 12px;
+            padding-left: 16px;
+            position: relative;
+        }
+
+        .order-route::before {
+            content: '';
+            position: absolute;
+            left: 4px;
+            top: 8px;
+            bottom: 8px;
+            width: 2px;
+            background: #00B14F;
+        }
+
+        .route-point {
+            position: relative;
+            padding: 6px 0 6px 20px;
+            font-size: 14px;
+            color: #333;
+        }
+
+        .route-point::before {
+            content: '';
+            position: absolute;
+            left: -4px;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background: white;
+            border: 2px solid #00B14F;
+        }
+
+        .route-point.destination::before {
+            background: #00B14F;
+        }
+
+        .order-footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding-top: 12px;
+            border-top: 1px solid #f0f0f0;
+        }
+
+        .order-price {
+            font-size: 16px;
+            font-weight: 600;
+            color: #1a1a1a;
+        }
+
+        .order-date {
+            font-size: 12px;
+            color: #999;
+        }
+
+        .order-actions {
+            display: flex;
+            gap: 8px;
+            margin-top: 12px;
+        }
+
+        .action-btn {
+            flex: 1;
+            padding: 12px;
+            border: none;
+            border-radius: 10px;
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .btn-primary {
+            background: #00B14F;
+            color: white;
+        }
+
+        .btn-secondary {
+            background: #f5f5f5;
+            color: #333;
+        }
+
+        .action-btn:hover {
+            transform: translateY(-1px);
+        }
+
+        /* Empty State */
+        .empty-state {
+            text-align: center;
+            padding: 60px 20px;
+        }
+
+        .empty-icon {
+            width: 80px;
+            height: 80px;
+            background: #f5f5f5;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 20px;
+        }
+
+        .empty-icon svg {
+            width: 40px;
+            height: 40px;
+            stroke: #ccc;
+            fill: none;
+            stroke-width: 1.5;
+        }
+
+        .empty-title {
+            font-size: 18px;
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 8px;
+        }
+
+        .empty-desc {
+            font-size: 14px;
+            color: #999;
+            margin-bottom: 24px;
+        }
+
+        .empty-btn {
+            display: inline-block;
+            padding: 14px 32px;
+            background: #00B14F;
+            color: white;
+            text-decoration: none;
+            border-radius: 12px;
+            font-size: 15px;
+            font-weight: 600;
+        }
+
+        /* Bottom Navigation */
+        .bottom-nav {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: white;
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+            padding: 8px 0;
+            padding-bottom: calc(8px + env(safe-area-inset-bottom));
+            box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.08);
+            z-index: 100;
+        }
+
+        .nav-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-decoration: none;
+            padding: 8px 16px;
+        }
+
+        .nav-icon {
+            width: 24px;
+            height: 24px;
+            stroke: #999;
+            fill: none;
+            stroke-width: 2;
+        }
+
+        .nav-item.active .nav-icon {
+            stroke: #00B14F;
+        }
+
+        .nav-label {
+            font-size: 11px;
+            color: #999;
+            margin-top: 4px;
+            font-weight: 500;
+        }
+
+        .nav-item.active .nav-label {
+            color: #00B14F;
+        }
+
+        .nav-center {
+            width: 56px;
+            height: 56px;
+            background: #00B14F;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-top: -30px;
+            box-shadow: 0 4px 16px rgba(0, 177, 79, 0.4);
+        }
+
+        .nav-center svg {
+            width: 28px;
+            height: 28px;
+            stroke: white;
+            fill: none;
+            stroke-width: 2;
+        }
+
+        /* Toast */
+        .toast {
+            position: fixed;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%) translateY(-100px);
+            background: #1a1a1a;
+            color: white;
+            padding: 14px 24px;
+            border-radius: 12px;
+            font-size: 14px;
+            font-weight: 500;
+            z-index: 1000;
+            opacity: 0;
+            transition: all 0.4s ease;
+        }
+
+        .toast.show {
+            transform: translateX(-50%) translateY(0);
+            opacity: 1;
+        }
+    </style>
+</head>
+<body>
+    <!-- Toast -->
+    <div class="toast" id="toast"></div>
+
+    <!-- Header -->
+    <header class="header">
+        <h1 class="header-title">Pesanan Saya</h1>
+        <div class="tab-filter">
+            <button class="filter-btn active" onclick="filterOrders('all')">Semua</button>
+            <button class="filter-btn" onclick="filterOrders('progress')">Dalam Proses</button>
+            <button class="filter-btn" onclick="filterOrders('completed')">Selesai</button>
+            <button class="filter-btn" onclick="filterOrders('cancelled')">Dibatalkan</button>
+        </div>
+    </header>
+
+    <!-- Orders List -->
+    <div class="orders-container" id="ordersContainer">
+        <!-- Order 1 -->
+        <div class="order-card" data-status="completed">
+            <div class="order-header">
+                <div class="order-service">
+                    <div class="service-icon-box">
+                        <svg viewBox="0 0 24 24"><path d="M5 17h14v-5H5v5zm1.5-4a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3zm11 0a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3z"/></svg>
+                    </div>
+                    <div class="service-info">
+                        <h4>Taxi Online</h4>
+                        <span>Reguler</span>
+                    </div>
+                </div>
+                <span class="order-status status-completed">Selesai</span>
+            </div>
+            <div class="order-route">
+                <div class="route-point">Jl. Sudirman No. 123</div>
+                <div class="route-point destination">Jl. Thamrin No. 456</div>
+            </div>
+            <div class="order-footer">
+                <span class="order-price">Rp 35.000</span>
+                <span class="order-date">20 Jan 2025, 14:30</span>
+            </div>
+            <div class="order-actions">
+                <button class="action-btn btn-secondary" onclick="showToast('Detail pesanan')">Detail</button>
+                <button class="action-btn btn-primary" onclick="showToast('Pesan lagi?')">Pesan Lagi</button>
+            </div>
+        </div>
+
+        <!-- Order 2 -->
+        <div class="order-card" data-status="progress">
+            <div class="order-header">
+                <div class="order-service">
+                    <div class="service-icon-box">
+                        <svg viewBox="0 0 24 24"><path d="M18 8h1a4 4 0 0 1 0 8h-1"/><path d="M2 8h16v9a4 4 0 0 1-4 4H6a4 4 0 0 1-4-4V8z"/></svg>
+                    </div>
+                    <div class="service-info">
+                        <h4>Pesan Makanan</h4>
+                        <span>Warung Padang</span>
+                    </div>
+                </div>
+                <span class="order-status status-progress">Dalam Proses</span>
+            </div>
+            <div class="order-route">
+                <div class="route-point">Warung Padang - Jl. Sabang</div>
+                <div class="route-point destination">Jl. Kebon Sirih No. 78</div>
+            </div>
+            <div class="order-footer">
+                <span class="order-price">Rp 52.000</span>
+                <span class="order-date">20 Jan 2025, 12:15</span>
+            </div>
+            <div class="order-actions">
+                <button class="action-btn btn-secondary" onclick="showToast('Hubungi driver')">Hubungi Driver</button>
+                <button class="action-btn btn-primary" onclick="showToast('Lacak pesanan')">Lacak Pesanan</button>
+            </div>
+        </div>
+
+        <!-- Order 3 -->
+        <div class="order-card" data-status="completed">
+            <div class="order-header">
+                <div class="order-service">
+                    <div class="service-icon-box">
+                        <svg viewBox="0 0 24 24"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 7V4a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v3"/></svg>
+                    </div>
+                    <div class="service-info">
+                        <h4>Rental Mobil</h4>
+                        <span>Toyota Avanza</span>
+                    </div>
+                </div>
+                <span class="order-status status-completed">Selesai</span>
+            </div>
+            <div class="order-route">
+                <div class="route-point">17 Jan 2025, 08:00</div>
+                <div class="route-point destination">19 Jan 2025, 08:00</div>
+            </div>
+            <div class="order-footer">
+                <span class="order-price">Rp 650.000</span>
+                <span class="order-date">17-19 Jan 2025</span>
+            </div>
+            <div class="order-actions">
+                <button class="action-btn btn-secondary" onclick="showToast('Detail pesanan')">Detail</button>
+                <button class="action-btn btn-primary" onclick="showToast('Sewa lagi?')">Sewa Lagi</button>
+            </div>
+        </div>
+
+        <!-- Order 4 -->
+        <div class="order-card" data-status="cancelled">
+            <div class="order-header">
+                <div class="order-service">
+                    <div class="service-icon-box">
+                        <svg viewBox="0 0 24 24"><path d="M5 17h14v-5H5v5z"/></svg>
+                    </div>
+                    <div class="service-info">
+                        <h4>Taxi Online</h4>
+                        <span>Premium</span>
+                    </div>
+                </div>
+                <span class="order-status status-cancelled">Dibatalkan</span>
+            </div>
+            <div class="order-route">
+                <div class="route-point">Jl. Gatot Subroto</div>
+                <div class="route-point destination">Bandara Soekarno-Hatta</div>
+            </div>
+            <div class="order-footer">
+                <span class="order-price">Rp 150.000</span>
+                <span class="order-date">15 Jan 2025, 06:00</span>
+            </div>
+            <div class="order-actions">
+                <button class="action-btn btn-secondary" onclick="showToast('Detail pembatalan')">Detail</button>
+                <button class="action-btn btn-primary" onclick="showToast('Pesan ulang?')">Pesan Ulang</button>
+            </div>
+        </div>
+
+        <!-- Order 5 -->
+        <div class="order-card" data-status="pending">
+            <div class="order-header">
+                <div class="order-service">
+                    <div class="service-icon-box">
+                        <svg viewBox="0 0 24 24"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/></svg>
+                    </div>
+                    <div class="service-info">
+                        <h4>Kurir</h4>
+                        <span>Dokumen Penting</span>
+                    </div>
+                </div>
+                <span class="order-status status-pending">Menunggu</span>
+            </div>
+            <div class="order-route">
+                <div class="route-point">Kantor Pusat - Jl. HR Rasuna</div>
+                <div class="route-point destination">Cabang Bekasi</div>
+            </div>
+            <div class="order-footer">
+                <span class="order-price">Rp 25.000</span>
+                <span class="order-date">20 Jan 2025, 10:00</span>
+            </div>
+            <div class="order-actions">
+                <button class="action-btn btn-secondary" onclick="showToast('Batalkan pesanan')">Batalkan</button>
+                <button class="action-btn btn-primary" onclick="showToast('Konfirmasi pesanan')">Konfirmasi</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Empty State (hidden by default) -->
+    <div class="empty-state" id="emptyState" style="display: none;">
+        <div class="empty-icon">
+            <svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+        </div>
+        <h3 class="empty-title">Belum Ada Pesanan</h3>
+        <p class="empty-desc">Anda belum memiliki pesanan apapun. Mulai pesan layanan favorit Anda!</p>
+        <a href="beranda.html" class="empty-btn">Pesan Sekarang</a>
+    </div>
+
+    <!-- Bottom Navigation -->
+    <nav class="bottom-nav">
+        <a href="beranda.html" class="nav-item">
+            <svg class="nav-icon" viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+            <span class="nav-label">Beranda</span>
+        </a>
+        <a href="promo.html" class="nav-item">
+            <svg class="nav-icon" viewBox="0 0 24 24"><path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"/><line x1="7" y1="7" x2="7.01" y2="7"/></svg>
+            <span class="nav-label">Promo</span>
+        </a>
+        <a href="taxi.html" class="nav-item">
+            <div class="nav-center">
+                <svg viewBox="0 0 24 24"><path d="M5 17h14v-5H5v5z"/></svg>
+            </div>
+        </a>
+        <a href="pesanan.html" class="nav-item active">
+            <svg class="nav-icon" viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+            <span class="nav-label">Pesanan</span>
+        </a>
+        <a href="akun.html" class="nav-item">
+            <svg class="nav-icon" viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M20 21a8 8 0 1 0-16 0"/></svg>
+            <span class="nav-label">Akun</span>
+        </a>
+    </nav>
+
+    <script>
+        // Show Toast
+        function showToast(message) {
+            const toast = document.getElementById('toast');
+            toast.textContent = message;
+            toast.classList.add('show');
+            setTimeout(() => {
+                toast.classList.remove('show');
+            }, 3000);
+        }
+
+        // Filter Orders
+        function filterOrders(status) {
+            const buttons = document.querySelectorAll('.filter-btn');
+            buttons.forEach(btn => btn.classList.remove('active'));
+            event.target.classList.add('active');
+
+            const cards = document.querySelectorAll('.order-card');
+            let visibleCount = 0;
+
+            cards.forEach(card => {
+                if (status === 'all' || card.dataset.status === status) {
+                    card.style.display = 'block';
+                    visibleCount++;
+                } else {
+                    card.style.display = 'none';
+                }
+            });
+
+            // Show empty state if no orders
+            const emptyState = document.getElementById('emptyState');
+            if (visibleCount === 0) {
+                emptyState.style.display = 'block';
+            } else {
+                emptyState.style.display = 'none';
+            }
+        }
+    </script>
+</body>
+</html>
